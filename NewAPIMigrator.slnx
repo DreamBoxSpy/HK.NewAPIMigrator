@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CompatibilityDetector/CompatibilityDetector.csproj" />
+  <Project Path="NewAPIMigrator/NewAPIMigrator.csproj" />
+</Solution>
