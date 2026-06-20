@@ -6,7 +6,7 @@ var inputDir = args[1];
 
 HashSet<string> modLibraries = [];
 
-//Console.SetOut(new StreamWriter(File.OpenWrite("compatib.txt")));
+Console.SetOut(new StreamWriter(File.OpenWrite("compatib.txt")));
 
 foreach (var v in Directory.EnumerateFiles(inputDir, "*.dll", SearchOption.AllDirectories))
 {

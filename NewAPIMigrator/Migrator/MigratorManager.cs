@@ -168,7 +168,11 @@ namespace NewAPIMigrator.Migrator
             List<string> dirs = [];
             foreach(var v in Directory.EnumerateDirectories(MODS_ROOT, "*", SearchOption.TopDirectoryOnly))
             {
-                if(v.Equals("Disabled", StringComparison.OrdinalIgnoreCase))
+                if(Path.GetFileName(v).Equals("Disabled", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                if(File.Exists(Path.Combine(v, ".no-migrate")))
                 {
                     continue;
                 }
