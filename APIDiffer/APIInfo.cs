@@ -31,14 +31,14 @@ namespace APIDiffer
 
         private static string GetMethodName(MethodDefinition md)
         {
-            return $"{md.ReturnType.Name} {md.Name}({ string.Join(',', md.Parameters.Select(x => x.ParameterType.Name)) })"
+            return $"{(md.IsStatic ? "static" : "")} {md.ReturnType.Name} {md.Name}({ string.Join(',', md.Parameters.Select(x => x.ParameterType.Name)) })"
                 .Replace("[", "[[")
                 .Replace("]", "]]");
         }
 
         private static string GetFieldName(FieldDefinition fd)
         {
-            return $"{fd.FieldType.Name} {fd.Name}"
+            return $"{(fd.IsStatic ? "static" : "")} {fd.FieldType.Name} {fd.Name}"
                 .Replace("[", "[[")
                 .Replace("]", "]]");
         }
