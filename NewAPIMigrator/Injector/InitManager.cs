@@ -19,7 +19,7 @@ public class InitManager
 
     private static InitManager? instance; 
     
-    public MigratorManager manager;
+    public MigratorManager? manager;
 
     private Hook? hook_get_location;
 
@@ -77,7 +77,7 @@ public class InitManager
 
     private static string Hook_Assembly_get_Location(Func<Assembly, string> orig, Assembly asm)
     {
-        if(instance!.manager.locationMapping.TryGetValue(asm, out var loc))
+        if(instance!.manager!.locationMapping.TryGetValue(asm, out var loc))
         {
             return loc;
         }

@@ -106,7 +106,13 @@ namespace NewAPIMigrator.Migrator
             // 
 
             CopyNamespace("TeamCherry.Cinematics", null);
+
             Add("TeamCherry.Cinematics.StreamingCinematicVideoPlayer", "XB1CinematicVideoPlayer");
+            Add("HutongGames.PlayMaker.Actions.SendEventToRegister", "SendEventToRegister");
+            Add("HutongGames.PlayMaker.Actions.AddEventRegister", "AddEventRegister");
+            Add("HutongGames.PlayMaker.Actions.PreloadVibration", "PreloadVibration");
+            Add("HutongGames.PlayMaker.Actions.PlayVibration", "PlayVibration");
+            Add("HutongGames.PlayMaker.Actions.StopVibration", "StopVibration");
             
         }
         private bool RemapReferences(AssemblyDefinition ad)

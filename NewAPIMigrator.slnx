@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="APIDiffer/APIDiffer.csproj" Id="80d41580-3b18-4199-ba51-2eb42abf798f" />
   <Project Path="CompatibilityDetector/CompatibilityDetector.csproj" />
   <Project Path="NewAPIMigrator/NewAPIMigrator.csproj" />
 </Solution>
