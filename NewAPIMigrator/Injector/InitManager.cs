@@ -1,6 +1,7 @@
 
 using HKTool.Unity;
 using MonoMod.RuntimeDetour;
+using NewAPIMigrator;
 using NewAPIMigrator.Migrator;
 using System;
 using System.Linq;
@@ -61,6 +62,7 @@ public class InitManager
         instance = new();
         instance.Init();
 
+        ModHooksManager.Init();
     }
 
     private void Init()

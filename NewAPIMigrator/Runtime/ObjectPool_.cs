@@ -9,6 +9,7 @@ namespace NewAPIMigrator.Runtime
     {
         public static void orig_CreatePool(GameObject obj, int i)
         {
+            using var _ = new ModHooksManager.DisableModHooks();
             ObjectPool.CreatePool(obj, i);
         }
     }

@@ -9,6 +9,7 @@ namespace NewAPIMigrator.Runtime
     {
         public static void orig_StartMPDrain(HeroControllerR self, float t)
         {
+            using var _ = new ModHooksManager.DisableModHooks();
             self.StartMPDrain(t);
         }
 
@@ -16,6 +17,23 @@ namespace NewAPIMigrator.Runtime
         {
             self.invulnerableDuration = t;
             return self.Invulnerable();
+        }
+        public static void orig_Update(HeroController self)
+        {
+            using var _ = new ModHooksManager.DisableModHooks();
+            self.Reflect().Update();
+        }
+
+        public static void orig_Dash(HeroController self)
+        {
+            using var _ = new ModHooksManager.DisableModHooks();
+            self.Reflect().Dash();
+        }
+
+        public static void orig_DoAttack(HeroController self)
+        {
+            using var _ = new ModHooksManager.DisableModHooks();
+            self.Reflect().DoAttack();
         }
 
         public static VibrationDataR get_softLandVibration(HeroControllerR self)
