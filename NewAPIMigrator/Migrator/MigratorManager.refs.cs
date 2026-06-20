@@ -23,7 +23,7 @@ namespace NewAPIMigrator.Migrator
                 {
                     continue;
                 }
-                if (vt.GetCustomAttribute<RedirectType>() is not null)
+                if (vt.GetCustomAttribute<ReplaceType>() is not null)
                 {
                     if (vt.GetCustomAttribute<MigrateIgnore>() is null)
                     {
@@ -41,7 +41,7 @@ namespace NewAPIMigrator.Migrator
                 var pt = v.DeclaringType;
                 var vt = GetRuntimeType(pt);
                 if (vt == null ||
-                    vt.GetCustomAttribute<RedirectType>() is not null)
+                    vt.GetCustomAttribute<ReplaceType>() is not null)
                 {
                     continue;
                 }

@@ -5,7 +5,7 @@ using System.Text;
 namespace NewAPIMigrator.Migrator
 {
     [AttributeUsage(AttributeTargets.Class)]
-    internal class RedirectType : Attribute
+    internal class ReplaceType : Attribute
     {
     }
 }

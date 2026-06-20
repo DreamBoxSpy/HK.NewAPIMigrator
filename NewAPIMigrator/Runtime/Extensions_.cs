@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace NewAPIMigrator.Runtime
 {
     // Token: 0x020004D9 RID: 1241
-    [RedirectType]
+    [ReplaceType]
     public static class Extensions_
     {
         // Token: 0x06001B6D RID: 7021 RVA: 0x00083724 File Offset: 0x00081924
