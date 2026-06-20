@@ -113,6 +113,8 @@ namespace NewAPIMigrator.Migrator
             Add("HutongGames.PlayMaker.Actions.PreloadVibration", "PreloadVibration");
             Add("HutongGames.PlayMaker.Actions.PlayVibration", "PlayVibration");
             Add("HutongGames.PlayMaker.Actions.StopVibration", "StopVibration");
+
+            Add("TeamCherry.SharedUtils.Encryption", "Encryption");
             
         }
         private bool RemapReferences(AssemblyDefinition ad)

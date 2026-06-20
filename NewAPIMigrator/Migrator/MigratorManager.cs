@@ -87,7 +87,13 @@ namespace NewAPIMigrator.Migrator
 
             foreach(var v in modDLLs)
             {
-                MigrateMod(v);
+                try
+                {
+                    MigrateMod(v);
+                }catch(Exception ex)
+                {
+                    logger.LogException(ex);
+                }
             }
 
         }
@@ -117,7 +123,17 @@ namespace NewAPIMigrator.Migrator
             }
 
             var stream = new MemoryStream(data, true);
-            using var ad = AssemblyDefinition.ReadAssembly(stream);
+            using var resolver = new DefaultAssemblyResolver();
+
+            foreach(var v in modDLLs.Select(x => Path.GetDirectoryName(x)).Distinct())
+            {
+                resolver.AddSearchDirectory(v);
+            }
+
+            using var ad = AssemblyDefinition.ReadAssembly(stream, new()
+            {
+                AssemblyResolver = resolver
+            });
 
             var migrated = false;
 
@@ -146,7 +162,6 @@ namespace NewAPIMigrator.Migrator
             logger.Log("Skip.");
         }
 
-        
 
         private void ScanMods()
         {

@@ -10,7 +10,11 @@ HashSet<string> modLibraries = [];
 
 foreach (var v in Directory.EnumerateFiles(inputDir, "*.dll", SearchOption.AllDirectories))
 {
-    modLibraries.Add(Path.GetFileNameWithoutExtension(v).ToLower());
+    using var ad = AssemblyDefinition.ReadAssembly(v, new()
+    {
+        ReadingMode = ReadingMode.Deferred
+    });
+    modLibraries.Add(ad.Name.Name.ToLower());
 }
 
 var resolver = new DefaultAssemblyResolver();
@@ -85,8 +89,12 @@ foreach (var v in Directory.EnumerateFiles(inputDir, "*.dll", SearchOption.AllDi
                 }
             }
         }
-        catch (AssemblyResolutionException ex) when(!modLibraries.Contains(ex.AssemblyReference.Name))
+        catch (AssemblyResolutionException ex)
         {
+            if(modLibraries.Contains(ex.AssemblyReference.Name.ToLower()))
+            {
+                continue;
+            }
         }
         catch (ResolutionException)
         {
