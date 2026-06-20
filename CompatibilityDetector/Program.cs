@@ -10,11 +10,15 @@ HashSet<string> modLibraries = [];
 
 foreach (var v in Directory.EnumerateFiles(inputDir, "*.dll", SearchOption.AllDirectories))
 {
-    using var ad = AssemblyDefinition.ReadAssembly(v, new()
+    try
     {
-        ReadingMode = ReadingMode.Deferred
-    });
-    modLibraries.Add(ad.Name.Name.ToLower());
+        using var ad = AssemblyDefinition.ReadAssembly(v, new()
+        {
+            ReadingMode = ReadingMode.Deferred
+        });
+        modLibraries.Add(ad.Name.Name.ToLower());
+    }
+    catch(BadImageFormatException) { }
 }
 
 var resolver = new DefaultAssemblyResolver();
@@ -25,94 +29,99 @@ foreach (var v in Directory.EnumerateFiles(inputDir, "*.dll", SearchOption.AllDi
 
     HashSet<string> missingType = [];
 
-    using var ad = AssemblyDefinition.ReadAssembly(v, new()
+    try
     {
-        AssemblyResolver = resolver
-    });
-
-    Console.WriteLine("#ASM:" + ad.Name.Name);
-
-    var mm = ad.MainModule;
-    foreach (var t in mm.GetTypeReferences())
-    {
-        try
+        using var ad = AssemblyDefinition.ReadAssembly(v, new()
         {
-            if(t.Resolve() != null)
+            AssemblyResolver = resolver
+        });
+
+        Console.WriteLine("#ASM:" + ad.Name.Name);
+
+        var mm = ad.MainModule;
+        foreach (var t in mm.GetTypeReferences())
+        {
+            try
+            {
+                if (t.Resolve() != null)
+                {
+                    continue;
+                }
+
+            }
+            catch (AssemblyResolutionException)
+            {
+
+            }
+
+            missingType.Add(t.FullName);
+
+            if (t.FullName.StartsWith("On.") || t.FullName.StartsWith("IL."))
             {
                 continue;
             }
-            
-        } catch (AssemblyResolutionException)
-        {
-           
+
+            var asmName = (AssemblyNameReference)t.Scope;
+
+            if (!modLibraries.Contains(asmName.Name.ToLower()))
+            {
+                Console.WriteLine($"[Type]{t.FullName}, {asmName.Name}");
+            }
         }
 
-        missingType.Add(t.FullName);
-
-        if(t.FullName.StartsWith("On.") || t.FullName.StartsWith("IL."))
+        foreach (var m in mm.GetMemberReferences())
         {
-            continue;
-        }
-
-        var asmName = (AssemblyNameReference)t.Scope;
-
-        if (!modLibraries.Contains(asmName.Name.ToLower()))
-        {
-            Console.WriteLine($"[Type]{t.FullName}, {asmName.Name}");
-        }
-    }
-
-    foreach (var m in mm.GetMemberReferences())
-    {
-        var pt = m.DeclaringType?.FullName;
-        if (string.IsNullOrEmpty(pt))
-        {
-            continue;
-        }
-
-        if (missingType.Contains(pt))
-        {
-            continue;
-        }
-
-        try
-        {
-            if(m.Resolve() != null)
+            var pt = m.DeclaringType?.FullName;
+            if (string.IsNullOrEmpty(pt))
             {
                 continue;
             }
-            if(m.DeclaringType != null)
+
+            if (missingType.Contains(pt))
             {
-                if(m.DeclaringType.FullName.StartsWith("On."))
+                continue;
+            }
+
+            try
+            {
+                if (m.Resolve() != null)
+                {
+                    continue;
+                }
+                if (m.DeclaringType != null)
+                {
+                    if (m.DeclaringType.FullName.StartsWith("On."))
+                    {
+                        continue;
+                    }
+                }
+            }
+            catch (AssemblyResolutionException ex)
+            {
+                if (modLibraries.Contains(ex.AssemblyReference.Name.ToLower()))
                 {
                     continue;
                 }
             }
-        }
-        catch (AssemblyResolutionException ex)
-        {
-            if(modLibraries.Contains(ex.AssemblyReference.Name.ToLower()))
+            catch (ResolutionException)
             {
-                continue;
             }
-        }
-        catch (ResolutionException)
-        {
-        }
 
-        var kind = m switch
-        {
-            FieldReference => "Field",
-            MethodReference => "Method",
-            EventReference => "Event",
-            PropertyReference => "Prop",
-            _ => throw new NotSupportedException()
-        };
-        var asmName = m.DeclaringType?.Scope as AssemblyNameReference;
+            var kind = m switch
+            {
+                FieldReference => "Field",
+                MethodReference => "Method",
+                EventReference => "Event",
+                PropertyReference => "Prop",
+                _ => throw new NotSupportedException()
+            };
+            var asmName = m.DeclaringType?.Scope as AssemblyNameReference;
 
-        Console.WriteLine($"[Member][{kind}]{m},{asmName?.Name}");
-    
-    } 
+            Console.WriteLine($"[Member][{kind}]{m},{asmName?.Name}");
+
+        }
+    }
+    catch (BadImageFormatException) { }
 }
 
 Console.Out.Flush();
